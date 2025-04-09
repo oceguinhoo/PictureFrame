@@ -1,72 +1,101 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: sans-serif;
   margin: 0;
-  padding: 1rem;
-  background-color: #f2f2f2;
+  background-color: #fff8f0;
   color: #333;
-  transition: background-color 0.3s, color 0.3s;
+  transition: all 0.3s ease;
 }
 
-body.dark {
-  background-color: #121212;
-  color: #fff;
+.dark-mode {
+  background-color: #1a1a1a;
+  color: #ddd;
 }
 
-main {
-  max-width: 600px;
-  margin: auto;
+.card {
+  background-color: #fff3e0;
+  border-radius: 10px;
+  padding: 1em;
+  margin: 2em auto;
+  max-width: 400px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.dark-mode .card {
+  background-color: #333;
 }
 
 input, button {
   display: block;
-  margin: 0.5rem 0;
-  padding: 0.5rem;
   width: 100%;
-  box-sizing: border-box;
+  margin: 0.5em 0;
+  padding: 0.7em;
+  border-radius: 6px;
+  border: none;
 }
 
 button {
+  background-color: #ffb74d;
+  color: #000;
+  font-weight: bold;
   cursor: pointer;
 }
 
-#photos {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-top: 2rem;
+button:hover {
+  background-color: #ffa726;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  padding: 1em;
 }
 
 .photo-card {
-  background: #fff;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 0 4px rgba(0,0,0,0.1);
-  transition: background 0.3s;
-}
-
-body.dark .photo-card {
-  background: #1e1e1e;
+  position: relative;
+  background-color: #fffde7;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
 .photo-card img {
-  max-width: 100%;
-  border-radius: 6px;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.delete-btn {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  background-color: rgba(255, 0, 0, 0.6);
+  color: white;
+  border: none;
+  font-size: 16px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background-color: rgba(255, 0, 0, 0.9);
+}
+
+.dark-mode .photo-card {
+  background-color: #2a2a2a;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 10px;
 }
 
 #theme-toggle, #logout-btn {
-  position: fixed;
-  top: 10px;
-  padding: 8px 12px;
-  border: none;
-  background: #333;
-  color: white;
-  border-radius: 5px;
-}
-
-#theme-toggle {
-  left: 10px;
-}
-
-#logout-btn {
-  right: 10px;
+  width: auto;
+  padding: 5px 10px;
+  font-size: 0.9em;
+  border-radius: 6px;
 }
