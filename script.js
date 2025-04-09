@@ -4,55 +4,42 @@ const supabase = window.supabase.createClient(
 );
 
 let currentUser = null;
+let fotosExibidas = 0;
+const fotosPorPagina = 9;
 
-document.addEventListener('DOMContentLoaded', () => {
-  const userData = localStorage.getItem('user');
-  if (userData) {
-    currentUser = JSON.parse(userData);
-    showApp();
-  } else {
-    showLogin();
+document.getElementById('theme-toggle').onclick = () => {
+  document.body.classList.toggle('dark-mode');
+};
+
+document.getElementById('logout-btn').onclick = () => {
+  localStorage.removeItem('currentUser');
+  location.reload();
+};
+
+window.onload = async () => {
+  const stored = localStorage.getItem('currentUser');
+  if (stored) {
+    currentUser = JSON.parse(stored);
+    document.getElementById('auth').style.display = 'none';
+    document.getElementById('upload').style.display = 'block';
+    document.getElementById('logout-btn').style.display = 'inline-block';
+    loadGallery();
   }
-
-  document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
-});
-
-function toggleTheme() {
-  document.body.classList.toggle('dark');
-  const btn = document.getElementById('theme-toggle');
-  btn.textContent = document.body.classList.contains('dark') ? 'Modo Claro' : 'Modo Escuro';
-}
-
-function showApp() {
-  document.getElementById('auth').style.display = 'none';
-  document.getElementById('upload').style.display = 'block';
-  document.getElementById('logout-btn').style.display = 'block';
-  loadGallery();
-}
-
-function showLogin() {
-  document.getElementById('auth').style.display = 'block';
-  document.getElementById('upload').style.display = 'none';
-  document.getElementById('logout-btn').style.display = 'none';
-}
-
-function logout() {
-  localStorage.removeItem('user');
-  currentUser = null;
-  showLogin();
-}
+};
 
 async function signup() {
   const username = document.getElementById('signup-username').value;
   const password = document.getElementById('signup-password').value;
   const hash = btoa(password);
 
-  const { error } = await supabase.from('profiles').insert([{ username, senha_hash: hash }]);
+  const { error } = await supabase.from('profiles').insert([
+    { username, senha_hash: hash }
+  ]);
 
   if (error) {
     alert('Erro no cadastro: ' + error.message);
   } else {
-    alert('Cadastro realizado! Agora faça login.');
+    alert('Cadastro realizado com sucesso!');
   }
 }
 
@@ -72,8 +59,11 @@ async function login() {
     alert('Usuário ou senha inválidos.');
   } else {
     currentUser = data;
-    localStorage.setItem('user', JSON.stringify(data));
-    showApp();
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    document.getElementById('auth').style.display = 'none';
+    document.getElementById('upload').style.display = 'block';
+    document.getElementById('logout-btn').style.display = 'inline-block';
+    loadGallery();
   }
 }
 
@@ -110,21 +100,17 @@ async function uploadImage() {
     alert('Erro ao salvar os dados.');
   } else {
     alert('Imagem enviada com sucesso!');
-    loadGallery();
+    fotosExibidas = 0;
+    loadGallery(true);
   }
 }
 
-async function deleteImage(id, url) {
-  const filePath = url.split('/').pop();
-  const { error: deleteError } = await supabase.from('fotos').delete().eq('id', id);
-
-  if (!deleteError) {
-    await supabase.storage.from('fotos').remove([filePath]);
-    loadGallery();
+async function loadGallery(recarregar = false) {
+  if (recarregar) {
+    document.getElementById('photos').innerHTML = '';
+    fotosExibidas = 0;
   }
-}
 
-async function loadGallery() {
   const { data, error } = await supabase
     .from('fotos')
     .select(`
@@ -132,18 +118,23 @@ async function loadGallery() {
       url,
       descricao,
       user_id,
-      profiles!fotos_user_id_fkey(username)
+      profiles(username)
     `)
-    .order('id', { ascending: false });
+    .order('id', { ascending: false })
+    .range(fotosExibidas, fotosExibidas + fotosPorPagina - 1);
 
   if (error) {
     console.error(error);
     return;
   }
 
-  const photosDiv = document.getElementById('photos');
-  photosDiv.innerHTML = '';
+  if (data.length === fotosPorPagina) {
+    document.getElementById('load-more').style.display = 'block';
+  } else {
+    document.getElementById('load-more').style.display = 'none';
+  }
 
+  const photosDiv = document.getElementById('photos');
   data.forEach(foto => {
     const div = document.createElement('div');
     div.className = 'photo-card';
@@ -163,15 +154,26 @@ async function loadGallery() {
 
     if (foto.user_id === currentUser.id) {
       const del = document.createElement('button');
-      del.textContent = 'Apagar';
-      del.onclick = () => {
-        if (confirm('Tem certeza que deseja apagar esta imagem?')) {
-          deleteImage(foto.id, foto.url);
-        }
-      };
+      del.className = 'delete-btn';
+      del.textContent = 'X';
+      del.onclick = () => deleteImage(foto.id, foto.url);
       div.appendChild(del);
     }
 
     photosDiv.appendChild(div);
   });
+
+  fotosExibidas += data.length;
+}
+
+async function loadMore() {
+  loadGallery();
+}
+
+async function deleteImage(id, url) {
+  const path = url.split('/').pop();
+  await supabase.storage.from('fotos').remove([path]);
+  await supabase.from('fotos').delete().eq('id', id);
+  fotosExibidas = 0;
+  loadGallery(true);
 }
