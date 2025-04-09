@@ -1,53 +1,72 @@
 body {
-  font-family: sans-serif;
-  background-color: #121212;
-  color: #f0f0f0;
+  font-family: Arial, sans-serif;
   margin: 0;
-  padding: 0;
-  text-align: center;
+  padding: 1rem;
+  background-color: #f2f2f2;
+  color: #333;
+  transition: background-color 0.3s, color 0.3s;
 }
 
-header {
-  background-color: #1f1f1f;
-  padding: 20px;
+body.dark {
+  background-color: #121212;
+  color: #fff;
 }
 
 main {
-  padding: 20px;
+  max-width: 600px;
+  margin: auto;
 }
 
 input, button {
-  padding: 10px;
-  margin: 5px;
-  border: none;
-  border-radius: 4px;
-}
-
-input {
-  width: 80%;
-  max-width: 300px;
+  display: block;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 button {
-  background-color: #0080ff;
-  color: white;
   cursor: pointer;
 }
 
-button:hover {
-  background-color: #005fcc;
+#photos {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 2rem;
 }
 
 .photo-card {
-  background-color: #1e1e1e;
-  margin: 10px;
-  padding: 10px;
+  background: #fff;
+  padding: 1rem;
   border-radius: 8px;
-  display: inline-block;
-  width: 300px;
+  box-shadow: 0 0 4px rgba(0,0,0,0.1);
+  transition: background 0.3s;
+}
+
+body.dark .photo-card {
+  background: #1e1e1e;
 }
 
 .photo-card img {
-  width: 100%;
+  max-width: 100%;
   border-radius: 6px;
+}
+
+#theme-toggle, #logout-btn {
+  position: fixed;
+  top: 10px;
+  padding: 8px 12px;
+  border: none;
+  background: #333;
+  color: white;
+  border-radius: 5px;
+}
+
+#theme-toggle {
+  left: 10px;
+}
+
+#logout-btn {
+  right: 10px;
 }
