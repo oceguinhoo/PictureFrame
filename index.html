@@ -4,41 +4,39 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PictureFrame</title>
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="icon" href="favicon.png" type="image/png" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="favicon.png" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 <body>
-  <header>
-    <h1>PictureFrame</h1>
-  </header>
+  <button id="theme-toggle">Modo Escuro</button>
+  <button id="logout-btn" style="display:none;" onclick="logout()">Sair</button>
 
   <main>
+    <!-- Tela de login/cadastro -->
     <section id="auth">
       <h2>Login</h2>
       <input type="text" id="login-username" placeholder="Nome de usuário" />
       <input type="password" id="login-password" placeholder="Senha" />
       <button onclick="login()">Entrar</button>
 
-      <h2>Cadastro</h2>
-      <input type="text" id="signup-username" placeholder="Nome de usuário" />
-      <input type="password" id="signup-password" placeholder="Senha" />
+      <h2>Criar conta</h2>
+      <input type="text" id="signup-username" placeholder="Novo usuário" />
+      <input type="password" id="signup-password" placeholder="Nova senha" />
       <button onclick="signup()">Cadastrar</button>
     </section>
 
-    <section id="upload" style="display:none">
+    <!-- Tela de envio e galeria -->
+    <section id="upload" style="display:none;">
       <h2>Enviar Foto</h2>
-      <input type="file" id="image-file" accept="image/*" />
+      <input type="file" id="image-file" />
       <input type="text" id="image-description" placeholder="Descrição (opcional)" />
       <button onclick="uploadImage()">Enviar</button>
-    </section>
-
-    <section id="gallery">
       <h2>Galeria</h2>
       <div id="photos"></div>
     </section>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="script.js"></script>
 </body>
 </html>
