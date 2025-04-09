@@ -2,40 +2,38 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PictureFrame</title>
   <link rel="stylesheet" href="styles.css" />
-  <link rel="icon" href="favicon.png" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-  <button id="theme-toggle">Modo Escuro</button>
-  <button id="logout-btn" style="display:none;" onclick="logout()">Sair</button>
+  <div class="top-bar">
+    <button id="theme-toggle">Modo Escuro</button>
+    <button id="logout-btn" style="display: none;">Sair</button>
+  </div>
 
-  <main>
-    <!-- Tela de login/cadastro -->
-    <section id="auth">
-      <h2>Login</h2>
-      <input type="text" id="login-username" placeholder="Nome de usuário" />
-      <input type="password" id="login-password" placeholder="Senha" />
-      <button onclick="login()">Entrar</button>
+  <div id="auth" class="card">
+    <h2>Login</h2>
+    <input id="login-username" placeholder="Usuário" />
+    <input id="login-password" type="password" placeholder="Senha" />
+    <button onclick="login()">Entrar</button>
 
-      <h2>Criar conta</h2>
-      <input type="text" id="signup-username" placeholder="Novo usuário" />
-      <input type="password" id="signup-password" placeholder="Nova senha" />
-      <button onclick="signup()">Cadastrar</button>
-    </section>
+    <h3>Ou cadastre-se</h3>
+    <input id="signup-username" placeholder="Novo usuário" />
+    <input id="signup-password" type="password" placeholder="Nova senha" />
+    <button onclick="signup()">Cadastrar</button>
+  </div>
 
-    <!-- Tela de envio e galeria -->
-    <section id="upload" style="display:none;">
-      <h2>Enviar Foto</h2>
-      <input type="file" id="image-file" />
-      <input type="text" id="image-description" placeholder="Descrição (opcional)" />
-      <button onclick="uploadImage()">Enviar</button>
-      <h2>Galeria</h2>
-      <div id="photos"></div>
-    </section>
-  </main>
+  <div id="upload" class="card" style="display: none;">
+    <h2>Nova Foto</h2>
+    <input type="file" id="image-file" />
+    <input type="text" id="image-description" placeholder="Descrição (opcional)" />
+    <button onclick="uploadImage()">Enviar</button>
+  </div>
+
+  <div id="photos" class="gallery"></div>
+  <button id="load-more" style="display:none;" onclick="loadMore()">Carregar mais</button>
 
   <script src="script.js"></script>
 </body>
