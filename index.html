@@ -2,10 +2,10 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PictureFrame</title>
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="icon" href="favicon.png" type="image/png">
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="favicon.png" type="image/png" />
 </head>
 <body>
   <header>
@@ -25,7 +25,7 @@
       <button onclick="signup()">Cadastrar</button>
     </section>
 
-    <section id="upload" style="display: none;">
+    <section id="upload" style="display:none">
       <h2>Enviar Foto</h2>
       <input type="file" id="image-file" accept="image/*" />
       <input type="text" id="image-description" placeholder="Descrição (opcional)" />
@@ -38,7 +38,7 @@
     </section>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="script.js"></script>
 </body>
 </html>
