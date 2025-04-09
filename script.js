@@ -5,19 +5,54 @@ const supabase = window.supabase.createClient(
 
 let currentUser = null;
 
+document.addEventListener('DOMContentLoaded', () => {
+  const userData = localStorage.getItem('user');
+  if (userData) {
+    currentUser = JSON.parse(userData);
+    showApp();
+  } else {
+    showLogin();
+  }
+
+  document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+});
+
+function toggleTheme() {
+  document.body.classList.toggle('dark');
+  const btn = document.getElementById('theme-toggle');
+  btn.textContent = document.body.classList.contains('dark') ? 'Modo Claro' : 'Modo Escuro';
+}
+
+function showApp() {
+  document.getElementById('auth').style.display = 'none';
+  document.getElementById('upload').style.display = 'block';
+  document.getElementById('logout-btn').style.display = 'block';
+  loadGallery();
+}
+
+function showLogin() {
+  document.getElementById('auth').style.display = 'block';
+  document.getElementById('upload').style.display = 'none';
+  document.getElementById('logout-btn').style.display = 'none';
+}
+
+function logout() {
+  localStorage.removeItem('user');
+  currentUser = null;
+  showLogin();
+}
+
 async function signup() {
   const username = document.getElementById('signup-username').value;
   const password = document.getElementById('signup-password').value;
   const hash = btoa(password);
 
-  const { error } = await supabase.from('profiles').insert([
-    { username, senha_hash: hash }
-  ]);
+  const { error } = await supabase.from('profiles').insert([{ username, senha_hash: hash }]);
 
   if (error) {
     alert('Erro no cadastro: ' + error.message);
   } else {
-    alert('Cadastro realizado com sucesso!');
+    alert('Cadastro realizado! Agora faça login.');
   }
 }
 
@@ -37,9 +72,8 @@ async function login() {
     alert('Usuário ou senha inválidos.');
   } else {
     currentUser = data;
-    document.getElementById('auth').style.display = 'none';
-    document.getElementById('upload').style.display = 'block';
-    loadGallery();
+    localStorage.setItem('user', JSON.stringify(data));
+    showApp();
   }
 }
 
@@ -80,10 +114,21 @@ async function uploadImage() {
   }
 }
 
+async function deleteImage(id, url) {
+  const filePath = url.split('/').pop();
+  const { error: deleteError } = await supabase.from('fotos').delete().eq('id', id);
+
+  if (!deleteError) {
+    await supabase.storage.from('fotos').remove([filePath]);
+    loadGallery();
+  }
+}
+
 async function loadGallery() {
   const { data, error } = await supabase
     .from('fotos')
     .select(`
+      id,
       url,
       descricao,
       user_id,
@@ -115,6 +160,18 @@ async function loadGallery() {
     div.appendChild(user);
     div.appendChild(img);
     div.appendChild(desc);
+
+    if (foto.user_id === currentUser.id) {
+      const del = document.createElement('button');
+      del.textContent = 'Apagar';
+      del.onclick = () => {
+        if (confirm('Tem certeza que deseja apagar esta imagem?')) {
+          deleteImage(foto.id, foto.url);
+        }
+      };
+      div.appendChild(del);
+    }
+
     photosDiv.appendChild(div);
   });
 }
